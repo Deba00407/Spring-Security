@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME:root}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+jwt:
+  secret: ${JWT_SECRET}
