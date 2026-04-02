@@ -2,6 +2,7 @@ package com.debanjan.spring_security.controllers;
 
 import com.debanjan.spring_security.dtos.DecodedUser;
 import com.debanjan.spring_security.dtos.UserLoginRequest;
+import com.debanjan.spring_security.dtos.UserResponseDTO;
 import com.debanjan.spring_security.dtos.UserSignUpRequest;
 import com.debanjan.spring_security.services.AuthService;
 import com.debanjan.spring_security.utils.SuccessResponse;
@@ -12,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,9 +31,10 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Validated UserSignUpRequest userSignUpRequest, HttpServletRequest request){
-        String token = authService.signUpUser(userSignUpRequest);
+        UserResponseDTO user = authService.signUpUser(userSignUpRequest);
 
-        SuccessResponse<Map<String, String>> response = SuccessResponse.<Map<String, String>>builder().message("User signed up successfully").data(Map.of("token", token))
+        SuccessResponse<UserResponseDTO> response = SuccessResponse.<UserResponseDTO>builder()
+                .message("User signed up successfully").data(user)
                 .status(HttpStatus.CREATED.value())
                 .path(request.getRequestURI())
                 .build();
@@ -44,9 +44,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated UserLoginRequest userLoginRequest, HttpServletRequest request){
-        String token = authService.authenticateUser(userLoginRequest);
+        UserResponseDTO user = authService.authenticateUser(userLoginRequest);
 
-        SuccessResponse<Map<String, String>> response = SuccessResponse.<Map<String, String>>builder().message("User signed up successfully").data(Map.of("token", token))
+        SuccessResponse<UserResponseDTO> response = SuccessResponse.<UserResponseDTO>builder()
+                .message("User logged in successfully").data(user)
                 .status(HttpStatus.OK.value())
                 .path(request.getRequestURI())
                 .build();
