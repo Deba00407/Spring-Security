@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody @Validated UserSignUpRequest userSignUpRequest, HttpServletRequest request){
+    public ResponseEntity<SuccessResponse<UserResponseDTO>> signUp(@RequestBody @Validated UserSignUpRequest userSignUpRequest, HttpServletRequest request){
         UserResponseDTO user = authService.signUpUser(userSignUpRequest);
 
         SuccessResponse<UserResponseDTO> response = SuccessResponse.<UserResponseDTO>builder()
@@ -43,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Validated UserLoginRequest userLoginRequest, HttpServletRequest request){
+    public ResponseEntity<SuccessResponse<UserResponseDTO>> login(@RequestBody @Validated UserLoginRequest userLoginRequest, HttpServletRequest request){
         UserResponseDTO user = authService.authenticateUser(userLoginRequest);
 
         SuccessResponse<UserResponseDTO> response = SuccessResponse.<UserResponseDTO>builder()
@@ -56,7 +56,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token, HttpServletRequest request){
+    public ResponseEntity<SuccessResponse<DecodedUser>> getUserDetails(@RequestHeader("Authorization") String token, HttpServletRequest request){
         String authToken = extractAuthToken(token);
 
         DecodedUser user = authService.getUserDetails(authToken);

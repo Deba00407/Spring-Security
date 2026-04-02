@@ -1,7 +1,7 @@
 package com.debanjan.spring_security.services;
 
 import com.debanjan.spring_security.dtos.DecodedUser;
-import com.debanjan.spring_security.entities.User;
+import com.debanjan.spring_security.entities.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -32,11 +32,11 @@ public class JWTService {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateJWT(User user){
+    public String generateJWT(UserEntity userEntity){
         return Jwts.builder()
-                .subject(user.getId().toString())
-                .claim("fullname", user.getFullName())
-                .claim("email", user.getEmail())
+                .subject(userEntity.getEmail())
+                .claim("fullname", userEntity.getFullName())
+                .claim("id", userEntity.getId())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 60*60*1000)) // valid for 1hr
                 .signWith(generateKey())
@@ -51,9 +51,9 @@ public class JWTService {
                 .getPayload();
 
        return DecodedUser.builder()
-               .id(Long.parseLong(claims.getSubject()))
+               .id(Long.parseLong(claims.get("id").toString()))
                .fullName(claims.get("fullname").toString())
-               .email(claims.get("email").toString())
+               .email(claims.getSubject())
                .build();
     }
 }
